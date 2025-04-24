@@ -276,7 +276,7 @@ export default {
       return {
         booking_id: id,
         refund_status: refundStatus,
-        refund_amount: refundAmount,
+        refund_amount: refundAmount ? Number(refundAmount.toFixed(2)) : null,
       }
     } catch (error) {
       await client.query("ROLLBACK")

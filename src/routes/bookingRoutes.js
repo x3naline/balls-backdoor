@@ -15,7 +15,7 @@ router.get("/my-bookings", authenticate, bookingController.getUserBookings)
 router.get("/:booking_id", authenticate, bookingController.getBookingById)
 
 // Cancel booking
-router.post("/:booking_id/cancel", authenticate, bookingController.cancelBooking)
+router.put("/:booking_id/cancel", authenticate, bookingController.cancelBooking)
 
 // Admin routes
 router.get("/", authenticate, isAdmin, bookingController.getAllBookings)
