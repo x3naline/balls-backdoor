@@ -4,9 +4,11 @@ import userRoutes from "./userRoutes.js"
 import fieldRoutes from "./fieldRoutes.js"
 import bookingRoutes from "./bookingRoutes.js"
 import paymentRoutes from "./paymentRoutes.js"
+import paymentMethodRoutes from "./paymentMethodRoutes.js"
 import loyaltyRoutes from "./loyaltyRoutes.js"
 import notificationRoutes from "./notificationRoutes.js"
 import reportRoutes from "./reportRoutes.js"
+import adminRoutes from "./adminRoutes.js"
 
 const router = express.Router()
 
@@ -16,9 +18,11 @@ router.use("/users", userRoutes)
 router.use("/fields", fieldRoutes)
 router.use("/bookings", bookingRoutes)
 router.use("/payments", paymentRoutes)
+router.use("/payment-methods", paymentMethodRoutes)
 router.use("/loyalty", loyaltyRoutes)
 router.use("/notifications", notificationRoutes)
 router.use("/reports", reportRoutes)
+router.use("/admin", adminRoutes)
 
 // API health check
 router.get("/health", (req, res) => {

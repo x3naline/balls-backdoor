@@ -110,6 +110,24 @@ export default {
     }
   },
 
+  // Get all payments (admin only)
+  async getAllAdminPayments(req, res, next) {
+    try {
+      const { from_date = new Date().toISOString().split("T")[0], to_date = new Date().toISOString().split("T")[0] } =
+        req.query
+
+      // Generate report
+      const report = await paymentModel.getAllAdminPayments({
+        from_date,
+        to_date,
+      })
+
+      return res.status(200).json(responseFormatter.success("Payments generated successfully", report))
+    } catch (error) {
+      next(error)
+    }
+  },
+
   // Generate payment report (admin only)
   async generatePaymentReport(req, res, next) {
     try {

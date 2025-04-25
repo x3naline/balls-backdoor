@@ -173,6 +173,30 @@ export default {
     }
   },
 
+  // Get all bookings (admin only) - formatted for admin endpoint
+  async getAllAdminBookings(req, res, next) {
+    try {
+      const { status, field_id, user_id, from_date, to_date, page = 1, limit = 10 } = req.query
+
+      // Parse query parameters
+      const filters = { status, field_id, user_id, from_date, to_date }
+
+      // Get bookings with pagination
+      const { bookings, total } = await bookingModel.getAllAdminBookings(
+        filters,
+        Number.parseInt(page),
+        Number.parseInt(limit),
+      )
+
+      // Format response with pagination
+      const response = responseFormatter.pagination(bookings, total, Number.parseInt(page), Number.parseInt(limit))
+
+      return res.status(200).json(responseFormatter.success("Bookings retrieved successfully", response))
+    } catch (error) {
+      next(error)
+    }
+  },
+
   // Update booking status (admin only)
   async updateBookingStatus(req, res, next) {
     try {

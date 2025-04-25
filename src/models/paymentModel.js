@@ -141,6 +141,81 @@ export default {
     }
   },
 
+  // Get all payments for admin dashboard
+  async getAllAdminPayments(filters = {}) {
+    const { from_date, to_date } = filters
+
+    // Validate required filters
+    if (!from_date || !to_date) {
+      throw new Error("From date and to date are required")
+    }
+
+    // Get all payments in the period
+    const paymentsQuery = `
+      SELECT p.id as payment_id, p.booking_id, p.amount, pm.method_name, 
+             p.status, p.transaction_id, p.payment_date, p.notes
+      FROM payments p
+      JOIN payment_methods pm ON p.method_id = pm.id
+      WHERE p.created_at BETWEEN $1 AND $2
+      AND p.status = 'completed'
+    `
+
+    const paymentsResult = await db.query(paymentsQuery, [from_date, to_date])
+    const payments = paymentsResult.rows
+
+    // Calculate summary by payment method
+    const methodMap = new Map()
+    let totalRevenue = 0
+
+    payments.forEach((payment) => {
+      totalRevenue += Number.parseFloat(payment.amount)
+
+      if (!methodMap.has(payment.method_name)) {
+        methodMap.set(payment.method_name, {
+          method_name: payment.method_name,
+          count: 0,
+          amount: 0,
+        })
+      }
+
+      const methodStats = methodMap.get(payment.method_name)
+      methodStats.count++
+      methodStats.amount += Number.parseFloat(payment.amount)
+    })
+
+    // Format the payments to match the required response structure
+    const formattedPayments = []
+
+    methodMap.forEach((methodStats) => {
+      // Find all payments for this method
+      const methodPayments = payments.filter((p) => p.method_name === methodStats.method_name)
+
+      // Add each payment with method stats
+      methodPayments.forEach((payment) => {
+        formattedPayments.push({
+          method_name: methodStats.method_name,
+          count: methodStats.count,
+          amount: Number.parseFloat(methodStats.amount.toFixed(2)),
+          payment_id: payment.payment_id,
+          booking_id: payment.booking_id,
+          status: payment.status,
+          transaction_id: payment.transaction_id,
+          payment_date: payment.payment_date,
+          notes: payment.notes,
+        })
+      })
+    })
+
+    return {
+      period: {
+        from_date,
+        to_date,
+      },
+      total_revenue: Number.parseFloat(totalRevenue.toFixed(2)),
+      payment: formattedPayments,
+    }
+  },
+
   // Get all payments (admin only)
   async getAllPayments(filters = {}) {
     const { from_date, to_date } = filters

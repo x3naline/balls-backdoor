@@ -363,6 +363,103 @@ export default {
     }
   },
 
+  // Get all bookings for admin with formatted response
+  async getAllAdminBookings(filters = {}, page = 1, limit = 10) {
+    const { status, field_id, user_id, from_date, to_date } = filters
+
+    let query = `
+      SELECT b.id as booking_id, b.user_id, u.full_name,
+             b.field_id, f.field_name, b.booking_date, 
+             b.start_time, b.end_time, b.total_amount, 
+             b.booking_status, p.status as payment_status, b.created_at
+      FROM bookings b
+      JOIN users u ON b.user_id = u.id
+      JOIN fields f ON b.field_id = f.id
+      LEFT JOIN payments p ON b.id = p.booking_id
+      WHERE 1=1
+    `
+
+    const countQuery = `
+      SELECT COUNT(*) as total
+      FROM bookings b
+      JOIN users u ON b.user_id = u.id
+      JOIN fields f ON b.field_id = f.id
+      LEFT JOIN payments p ON b.id = p.booking_id
+      WHERE 1=1
+    `
+
+    const values = []
+    let paramIndex = 1
+
+    // Add filters
+    let filterClause = ""
+
+    if (status) {
+      filterClause += ` AND b.booking_status = $${paramIndex}`
+      values.push(status)
+      paramIndex++
+    }
+
+    if (field_id) {
+      filterClause += ` AND b.field_id = $${paramIndex}`
+      values.push(field_id)
+      paramIndex++
+    }
+
+    if (user_id) {
+      filterClause += ` AND b.user_id = $${paramIndex}`
+      values.push(user_id)
+      paramIndex++
+    }
+
+    if (from_date) {
+      filterClause += ` AND b.booking_date >= $${paramIndex}`
+      values.push(from_date)
+      paramIndex++
+    }
+
+    if (to_date) {
+      filterClause += ` AND b.booking_date <= $${paramIndex}`
+      values.push(to_date)
+      paramIndex++
+    }
+
+    // Add pagination
+    const offset = (page - 1) * limit
+    query +=
+      filterClause + ` ORDER BY b.booking_date DESC, b.start_time ASC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`
+    values.push(limit, offset)
+
+    // Execute queries
+    const bookingsResult = await db.query(query, values)
+    const countResult = await db.query(countQuery + filterClause, values.slice(0, paramIndex - 1))
+
+    // Format the bookings to match the required response structure
+    const formattedBookings = bookingsResult.rows.map((booking) => ({
+      booking_id: booking.booking_id,
+      user: {
+        user_id: booking.user_id,
+        full_name: booking.full_name,
+      },
+      field: {
+        field_id: booking.field_id,
+        field_name: booking.field_name,
+      },
+      booking_date: booking.booking_date,
+      start_time: booking.start_time,
+      end_time: booking.end_time,
+      total_amount: Number(booking.total_amount),
+      booking_status: booking.booking_status,
+      payment_status: booking.payment_status || null,
+      created_at: booking.created_at,
+    }))
+
+    return {
+      bookings: formattedBookings,
+      total: Number.parseInt(countResult.rows[0].total),
+    }
+  },
+
   // Update booking status (admin only)
   async updateStatus(id, status, notes) {
     const query = `
