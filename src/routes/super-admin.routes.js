@@ -18,4 +18,8 @@ router.delete("/admins/:user_id", userController.deleteAdmin)
 // System statistics
 router.get("/system-statistics", reportController.generateSystemStatistics)
 
+// Report routes (same as admin)
+router.get("/reports/bookings", reportController.generateBookingReport)
+router.get("/reports/loyalty", reportController.generateLoyaltyReport)
+
 export default router

@@ -38,5 +38,7 @@ router.post("/notifications/send", notificationController.sendNotification)
 
 // Admin report routes
 router.get("/reports/revenue", reportController.generateRevenueReport)
+router.get("/reports/bookings", reportController.generateBookingReport)
+router.get("/reports/loyalty", reportController.generateLoyaltyReport)
 
 export default router
