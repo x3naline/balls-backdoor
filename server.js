@@ -16,7 +16,7 @@ import bookingRoutes from "./src/routes/bookingRoutes.js"
 import paymentRoutes from "./src/routes/paymentRoutes.js"
 import loyaltyRoutes from "./src/routes/loyaltyRoutes.js"
 import adminRoutes from "./src/routes/adminRoutes.js"
-import superAdminRoutes from "./src/routes/superAdminRoutes.js"
+import superAdminRoutes from "./src/routes/super-admin.routes.js"
 import notificationRoutes from "./src/routes/notificationRoutes.js"
 import indexRoutes from "./src/routes/index.js" 
 

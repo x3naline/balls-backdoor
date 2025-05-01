@@ -28,7 +28,6 @@ export const schemas = {
     password: Joi.string().min(8).required(),
     full_name: Joi.string().required(),
     phone_number: Joi.string().required(),
-    user_type: Joi.string().valid("customer", "admin", "super_admin").optional(),
   }),
 
   login: Joi.object({
@@ -41,6 +40,7 @@ export const schemas = {
     full_name: Joi.string(),
     phone_number: Joi.string(),
     password: Joi.string().min(8),
+    is_active: Joi.boolean(),
   }).min(1),
 
   // Field schemas

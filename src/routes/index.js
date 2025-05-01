@@ -9,6 +9,7 @@ import loyaltyRoutes from "./loyaltyRoutes.js"
 import notificationRoutes from "./notificationRoutes.js"
 import reportRoutes from "./reportRoutes.js"
 import adminRoutes from "./adminRoutes.js"
+import superAdminRoutes from "./super-admin.routes.js"
 
 const router = express.Router()
 
@@ -23,6 +24,7 @@ router.use("/loyalty", loyaltyRoutes)
 router.use("/notifications", notificationRoutes)
 router.use("/reports", reportRoutes)
 router.use("/admin", adminRoutes)
+router.use("/super-admin", superAdminRoutes)
 
 // API health check
 router.get("/health", (req, res) => {
