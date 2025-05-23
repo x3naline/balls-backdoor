@@ -75,7 +75,7 @@ npm run seed (opsional)
 ```
 npm run dev
 npm start (opsional)
-``
+```
 
 ## Skrip yang Tersedia
 ```
