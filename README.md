@@ -26,11 +26,15 @@ Sebuah API RESTful yang komprehensif untuk mengelola pemesanan lapangan futsal d
 
 ## Instalasi
 ### 1. Clone the repository ---blm untuk integrasiny ---
-`git clone <repository-url> 
-cd borneo-anfield-loyalty-system`
+```
+git clone <repository-url> 
+cd borneo-anfield-loyalty-system
+```
 
 ### 2. Install dependencies
-`npm install`
+```
+npm install
+```
 
 ### 3. Environment Configuration
 Buat file `.env` di root direktori:
@@ -62,12 +66,16 @@ POINTS_EXPIRY_DAYS=365
 ```
 
 ### 4. Database Setup
-`npm run migrate:up
-npm run seed (opsional)`
+```
+npm run migrate:up
+npm run seed (opsional)
+```
 
 ### 5. Start the server
-`npm run dev
-npm start (opsional)`
+```
+npm run dev
+npm start (opsional)
+``
 
 ## Skrip yang Tersedia
 ```
